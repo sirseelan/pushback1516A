@@ -34,7 +34,8 @@ namespace Robot {
         extern lemlib::ControllerSettings angularPID;
 
         // Drive curve
-        extern lemlib::ExpoDriveCurve driveCurve;
+        extern lemlib::ExpoDriveCurve throttleCurve;
+        extern lemlib::ExpoDriveCurve steerCurve;
 
         // Chassis
         extern lemlib::Chassis chassis;

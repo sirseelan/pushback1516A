@@ -31,6 +31,14 @@ void on_center_button() {
 void initialize() {
 	//Basic intitialization of the screen
 	pros::lcd::initialize();
+
+	pros::lcd::print(1, "Calibrating IMU...");
+    sensors.imu->reset(); // start calibration
+
+    while (sensors.imu->is_calibrating()) {
+        pros::delay(20);
+    }
+
 	pros::lcd::set_text(1, "Team 1516A");
 	//Add button to screen
 	pros::lcd::register_btn1_cb(on_center_button);
@@ -85,10 +93,16 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
+	double heading = sensors.imu->get_heading();         // 0–360 degrees             // side tilt
 	while (true) {
 		//Drivetrain Block
-		chassis.arcade(controller.get_analog(ANALOG_LEFT_Y), controller.get_analog(ANALOG_RIGHT_X));  
-		pros::delay(10);                               // Run for 10 ms then update
+		heading = sensors.imu->get_heading();         // 0–360 degrees             // side tilt
+		chassis.arcade(controller.get_analog(ANALOG_LEFT_Y), -controller.get_analog(ANALOG_RIGHT_X));
+
+		// // Print out the sensor values to the controller screen
+        pros::lcd::print(0, "Head: %.2f", heading);
+
+		pros::delay(10);                          // Run for 10 ms then update
+		// pros::lcd::clear();
 	}
 }

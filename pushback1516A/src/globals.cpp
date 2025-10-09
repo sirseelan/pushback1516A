@@ -8,14 +8,14 @@ namespace Robot {
         pros::Controller controller(pros::E_CONTROLLER_MASTER);
         
 
-        signed char LEFT_BACK = -10;
-        signed char LEFT_MID = 9;
-        signed char LEFT_FRONT = -8;
+        signed char LEFT_BACK = 10;
+        signed char LEFT_MID = -9;
+        signed char LEFT_FRONT = 8;
 
 
-        signed char RIGHT_BACK = 18;
-        signed char RIGHT_MID = -19;
-        signed char RIGHT_FRONT = 20;
+        signed char RIGHT_BACK = -18;
+        signed char RIGHT_MID = 19;
+        signed char RIGHT_FRONT = -20;
 
 
         //Initialize the motor group for the left motors with ports 1, 2, and 3, denoting the blue gear cartrige
@@ -34,11 +34,17 @@ namespace Robot {
             0 // optimal drift value for all-omni drivetrain
         );
 
+        uint8_t inertial_port = 1;
+
+        //Declare IMU
+        pros::Imu imu(inertial_port);
+
+
         lemlib::OdomSensors sensors(nullptr,//&vertical_tracking_wheel, // vertical tracking wheel
                                     nullptr, // vertical tracking wheel 2, DNE
                                     nullptr, //&horizontal_tracking_wheel, // horizontal tracking wheel
                                     nullptr, // horizontal tracking wheel 2, DNE
-                                    nullptr //&imu // inertial sensor
+                                    &imu // inertial sensor
         );
 
         // Lateral (forward/backward)
@@ -68,14 +74,16 @@ namespace Robot {
         );
 
     
-        lemlib::ExpoDriveCurve driveCurve(5, 12, 1.132); // deadband, minOutput, curve
+        lemlib::ExpoDriveCurve throttleCurve(5, 12, 1.019); // deadband, minOutput, curve
+        lemlib::ExpoDriveCurve steerCurve(5, 12, 1.01); // deadband, minOutput, curve
 
         lemlib::Chassis chassis(
             drivetrain,
             lateralPID,     // lateral PID settings
             angularPID,     // angular PID settings
             sensors,
-            &driveCurve
+            &throttleCurve,
+            &steerCurve
         );
     }
 }
